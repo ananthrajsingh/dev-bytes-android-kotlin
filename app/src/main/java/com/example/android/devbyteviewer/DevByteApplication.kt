@@ -18,9 +18,8 @@
 package com.example.android.devbyteviewer
 
 import android.app.Application
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import android.os.Build
+import androidx.work.*
 import com.example.android.devbyteviewer.work.RefreshDataWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +41,19 @@ class DevByteApplication : Application() {
     }
 
     private fun setupRecurringWork() {
+
+        val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .setRequiresBatteryNotLow(true)
+                .setRequiresCharging(true)
+                .apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        setRequiresDeviceIdle(true)
+                    }
+                }
+                .build()
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
+                .setConstraints(constraints)
                 .build()
         WorkManager.getInstance().enqueueUniquePeriodicWork(
                 RefreshDataWorker.WORK_NAME,
@@ -50,11 +61,6 @@ class DevByteApplication : Application() {
                 repeatingRequest
         )
     }
-
-    // TODO (07) In setupRecurringWork(), define constraints to prevent work from occurring when
-    // there is no network access or the device is low on battery.
-
-    // TODO (08) Add the constraints to the repeatingRequest definition.
 
     /**
      * onCreate is called before the first screen is shown to the user.
