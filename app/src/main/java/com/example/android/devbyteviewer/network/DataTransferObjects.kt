@@ -26,8 +26,6 @@ import com.squareup.moshi.JsonClass
  * or formatting objects to send to the server. You should convert these to domain objects before
  * using them.
  */
-
-
 /**
  * VideoHolder holds a list of Videos.
  *

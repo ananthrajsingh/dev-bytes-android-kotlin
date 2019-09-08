@@ -20,7 +20,6 @@ package com.example.android.devbyteviewer.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.android.devbyteviewer.domain.Video
-
 @Entity
 data class DatabaseVideo constructor(
         @PrimaryKey
@@ -28,18 +27,15 @@ data class DatabaseVideo constructor(
         val updated: String,
         val title: String,
         val description: String,
-        val thumbnail: String
-)
+        val thumbnail: String)
+
 fun List<DatabaseVideo>.asDomainModel(): List<Video> {
     return map {
-        Video (
+        Video(
                 url = it.url,
                 title = it.title,
-                updated = it.updated,
                 description = it.description,
-                thumbnail = it.thumbnail
-        )
-
+                updated = it.updated,
+                thumbnail = it.thumbnail)
     }
 }
-
